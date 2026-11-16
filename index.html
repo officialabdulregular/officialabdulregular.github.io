@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ABDULREGULAR provides professional website design, development, redesign and maintenance services.">
+  <title>ABDULREGULAR | Web Agency</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: #f5f7ff;
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    header {
+      padding: 20px 0;
+      border-bottom: 1px solid #252d43;
+      background: #0b1020;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      color: #62e6c5;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      font-size: 14px;
+    }
+
+    nav ul a:hover { color: #62e6c5; }
+
+    .hero {
+      padding: 90px 0 80px;
+      text-align: center;
+      background: radial-gradient(circle at top, #1b3150, #0b1020 65%);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 7px 15px;
+      border: 1px solid #365b66;
+      border-radius: 30px;
+      color: #62e6c5;
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: clamp(38px, 7vw, 66px);
+      line-height: 1.12;
+      margin-bottom: 22px;
+    }
+
+    h1 span { color: #62e6c5; }
+
+    .hero p {
+      max-width: 650px;
+      margin: 0 auto 30px;
+      color: #b7c1d4;
+      font-size: 17px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 23px;
+      background: #62e6c5;
+      color: #07131a;
+      font-weight: bold;
+      border-radius: 8px;
+      margin: 5px;
+    }
+
+    .btn:hover { background: #8af5dc; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #62e6c5;
+      color: #62e6c5;
+    }
+
+    section { padding: 70px 0; }
+
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #aab5c9;
+      margin-bottom: 35px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      padding: 27px;
+      border: 1px solid #27334c;
+      border-radius: 13px;
+      background: #121b30;
+    }
+
+    .card .symbol {
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 { margin-bottom: 10px; }
+
+    .card p {
+      color: #aab5c9;
+      font-size: 14px;
+    }
+
+    .work-card {
+      background: #121b30;
+      border: 1px solid #27334c;
+      border-radius: 13px;
+      padding: 25px;
+    }
+
+    .work-card h3 { color: #62e6c5; }
+
+    .work-card p {
+      color: #aab5c9;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .about {
+      background: #111a2d;
+      text-align: center;
+    }
+
+    .about p {
+      max-width: 700px;
+      margin: auto;
+      color: #b7c1d4;
+    }
+
+    .contact {
+      text-align: center;
+    }
+
+    .contact p {
+      color: #b7c1d4;
+      margin: 12px auto 25px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      border-top: 1px solid #27334c;
+      color: #9ba8bd;
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      nav {
+        flex-direction: column;
+      }
+
+      nav ul {
+        gap: 13px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .hero { padding: 65px 0; }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      section { padding: 55px 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#" class="logo">ABDULREGULAR.</a>
+
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#work">Our Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="tag">WELCOME TO ABDULREGULAR AGENCY</div>
+
+        <h1>
+          We Build Websites<br>
+          That Help Your <span>Business Grow.</span>
+        </h1>
+
+        <p>
+          Professional website design, development,
+          redesign and maintenance services for
+          businesses ready to grow online.
+        </p>
+
+        <a href="#contact" class="btn">Start a Project</a>
+        <a href="#services" class="btn btn-outline">Explore Services</a>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="container">
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-subtitle">
+          Smart digital solutions for your business.
+        </p>
+
+        <div class="cards">
+          <div class="card">
+            <div class="symbol">🌐</div>
+            <h3>Website Design</h3>
+            <p>
+              Modern, responsive and professional
+              websites designed to represent your business.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="symbol">🛠️</div>
+            <h3>Website Repair</h3>
+            <p>
+              Help fixing website issues, broken pages
+              and other website problems.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="symbol">✨</div>
+            <h3>Redesign & Maintenance</h3>
+            <p>
+              Improve an existing website and help
+              keep its content and pages updated.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="container">
+        <h2 class="section-title">Our Work</h2>
+        <p class="section-subtitle">
+          Sample concepts created for our portfolio.
+        </p>
+
+        <div class="cards">
+          <div class="work-card">
+            <h3>Business Website</h3>
+            <p>
+              A concept website for a modern company
+              looking to establish an online presence.
+            </p>
+          </div>
+
+          <div class="work-card">
+            <h3>School Website</h3>
+            <p>
+              A concept design for a school to share
+              information, programs and announcements.
+            </p>
+          </div>
+
+          <div class="work-card">
+            <h3>Online Store</h3>
+            <p>
+              A concept storefront for displaying
+              products and helping customers discover them.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="container">
+        <h2 class="section-title">About ABDULREGULAR</h2>
+        <p>
+          ABDULREGULAR is a growing digital agency
+          focused on helping businesses build a strong
+          online presence through professional websites
+          and practical website solutions.
+        </p>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container">
+        <h2 class="section-title">Let's Build Something Great</h2>
+        <p>
+          Have a website project or need help improving
+          your existing website? Let's talk.
+        </p>
+        <a href="mailto:YOUR-EMAIL@example.com" class="btn">
+          Contact Our Agency
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 ABDULREGULAR Agency. All rights reserved.</p>
+    <p>Web Design • Development • Website Solutions</p>
+  </footer>
+
+</body>
+</html>
