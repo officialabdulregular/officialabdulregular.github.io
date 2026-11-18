@@ -360,7 +360,33 @@
           Have a website project or need help improving
           your existing website? Let's talk.
         </p>
-        
+       <form id="contactForm" class="contact-form">
+  <input
+    type="text"
+    id="name"
+    placeholder="Your Name"
+    required
+  >
+
+  <input
+    type="email"
+    id="email"
+    placeholder="Your Email"
+    required
+  >
+
+  <textarea
+    id="message"
+    placeholder="Your Message"
+    required
+  ></textarea>
+
+  <button type="submit" class="btn">
+    Send Message
+  </button>
+
+  <p id="formStatus"></p>
+       </form> 
 <div>
   <a
     href="https://wa.me/2348129139434?text=Hello%20ABDULREGULAR%20Agency%2C%20I%20need%20a%20website."
@@ -389,6 +415,50 @@
     <p>© 2026 ABDULREGULAR Agency. All rights reserved.</p>
     <p>Web Design • Development • Website Solutions</p>
   </footer>
+<script>
+const SUPABASE_URL = "https://ezppudjdbxpaznfywfk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_NfSs6k-2_EBPU-5HgcyErw_548GmI3b";
 
+const form = document.getElementById("contactForm");
+const status = document.getElementById("formStatus");
+
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  status.textContent = "Sending...";
+
+  const data = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    message: document.getElementById("message").value
+  };
+
+  try {
+    const response = await fetch(
+      SUPABASE_URL + "/rest/v1/contact_messages",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Message could not be sent");
+    }
+
+    status.textContent = "Message sent successfully!";
+    form.reset();
+
+  } catch (error) {
+    status.textContent = "Error sending message. Please try again.";
+  }
+});
+</script>
 </body>
 </html>
