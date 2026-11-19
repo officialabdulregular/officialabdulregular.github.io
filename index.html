@@ -447,16 +447,17 @@ form.addEventListener("submit", async function(e) {
         body: JSON.stringify(data)
       }
     );
+if (!response.ok) {
+  const errorText = await response.text();
+  throw new Error("Supabase " + response.status + ": " + errorText);
+}
 
-    if (!response.ok) {
-      throw new Error("Message could not be sent");
-    }
+status.textContent = "Message sent successfully!";
+form.reset();
 
-    status.textContent = "Message sent successfully!";
-    form.reset();
-
-  } catch (error) {
-    status.textContent = "Error sending message. Please try again.";
+} catch (error) {
+  status.textContent = "Error: " + error.message;
+                  }
   }
 });
 </script>
