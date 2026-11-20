@@ -2,277 +2,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | ABDULREGULAR</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b1020;
-      color: #fff;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 850px;
-      margin: 40px auto;
-    }
-
-    h1 {
-      color: #62e6c5;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      color: #aaa;
-      margin-bottom: 25px;
-    }
-
-    .panel {
-      background: #151d30;
-      border: 1px solid #29364d;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 7px;
-      border: 1px solid #39465e;
-      background: #0b1020;
-      color: white;
-      font-size: 15px;
-    }
-
-    button {
-      padding: 13px 20px;
-      border: none;
-      border-radius: 7px;
-      background: #62e6c5;
-      color: #07131a;
-      font-weight: bold;
-      cursor: pointer;
-      margin: 12px 8px 0 0;
-    }
-
-    .logout {
-      background: #e05b67;
-      color: white;
-    }
-
-    #dashboard {
-      display: none;
-    }
-
-    #status, #messageStatus {
-      margin-top: 15px;
-      color: #62e6c5;
-      overflow-wrap: anywhere;
-    }
-
-    .message {
-      border: 1px solid #35445d;
-      padding: 18px;
-      border-radius: 9px;
-      margin-top: 15px;
-      overflow-wrap: anywhere;
-    }
-
-    .message p {
-      margin-top: 10px;
-      color: #c5cbd5;
-      white-space: pre-wrap;
-    }
-
-    .date {
-      color: #62e6c5;
-      font-size: 12px;
-      margin-top: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABDULREGULAR | Admin Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#0b1020;color:white}
+.container{max-width:850px;margin:35px auto}
+h1{color:#62e6c5;font-size:25px}
+.subtitle{color:#aaa}
+.panel{background:#151d30;border:1px solid #29364d;border-radius:12px;padding:20px;margin:18px 0}
+input{width:100%;padding:14px;margin:10px 0;border-radius:7px;border:1px solid #39465e;background:#0b1020;color:white;font-size:15px}
+button{padding:11px 15px;border:0;border-radius:7px;background:#62e6c5;color:#07131a;font-weight:bold;cursor:pointer;margin:5px 5px 5px 0}
+button:disabled{opacity:.5}
+.danger{background:#e05b67;color:white}
+.secondary{background:#34435d;color:white}
+#dashboard{display:none}
+.status{margin:12px 0;color:#62e6c5;overflow-wrap:anywhere}
+.message{border:1px solid #35445d;padding:15px;border-radius:9px;margin-top:13px;overflow-wrap:anywhere}
+.message.unread{border-left:4px solid #62e6c5}
+.message p{margin:10px 0;color:#c5cbd5;white-space:pre-wrap}
+.date{color:#62e6c5;font-size:12px;margin-top:10px}
+.badge{color:#62e6c5;font-size:12px}
+.filters{margin:12px 0}
+a{color:#62e6c5}
+@media(max-width:500px){body{padding:14px}.container{margin:20px auto}.panel{padding:16px}}
+</style>
 </head>
-
 <body>
-  <div class="container">
+<div class="container">
+<h1>ABDULREGULAR</h1>
+<p class="subtitle">Private Admin Dashboard</p>
 
-    <h1>ABDULREGULAR</h1>
-    <p class="subtitle">Private Admin Dashboard</p>
+<section id="login" class="panel">
+<h3>Admin Login</h3>
+<input type="email" id="email" placeholder="Admin Email" autocomplete="username">
+<input type="password" id="password" placeholder="Password" autocomplete="current-password">
+<button id="loginBtn">Login</button>
+<p id="status" class="status"></p>
+</section>
 
-    <section id="login" class="panel">
-      <h2>Admin Login</h2>
+<section id="dashboard" class="panel">
+<h2>Customer Messages</h2>
+<p class="subtitle">Manage messages received from your website.</p>
 
-      <input type="email" id="email"
-        placeholder="Admin Email" autocomplete="username">
+<p id="summary" class="status"></p>
 
-      <input type="password" id="password"
-        placeholder="Password" autocomplete="current-password">
+<button id="refreshBtn">Refresh</button>
+<button id="logoutBtn" class="danger">Logout</button>
 
-      <button id="loginBtn">Login</button>
-      <p id="status" role="status"></p>
-    </section>
+<div class="filters">
+<button class="secondary" data-filter="all">All Messages</button>
+<button class="secondary" data-filter="unread">Unread</button>
+<button class="secondary" data-filter="read">Read</button>
+</div>
 
-    <section id="dashboard" class="panel">
-      <h2>Customer Messages</h2>
-      <p class="subtitle">Private messages received from your website.</p>
+<p id="messageStatus" class="status"></p>
+<div id="messages"></div>
+</section>
+</div>
 
-      <button id="refreshBtn">Refresh Messages</button>
-      <button id="logoutBtn" class="logout">Logout</button>
+<script>
+const SUPABASE_URL = "https://ezppudjdbxpaznfywffk.supabase.co";
 
-      <p id="messageStatus" role="status"></p>
-      <div id="messages"></div>
-    </section>
+/* Replace this text with your copied publishable key */
+const SUPABASE_KEY = "sb_publishable_NfSs6k-2_EBPU-5HgcyErw_548GmI3b";
 
-  </div>
+const client = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-  <script>
-    const SUPABASE_URL =
-      "https://ezppudjdbxpaznfywffk.supabase.co";
+const loginBox=document.getElementById("login");
+const dashboard=document.getElementById("dashboard");
+const status=document.getElementById("status");
+const messageStatus=document.getElementById("messageStatus");
+const messagesBox=document.getElementById("messages");
+const summary=document.getElementById("summary");
 
-    const SUPABASE_KEY =
-      "sb_publishable_NfSs6k-2_EBPU-5HgcyErw_548GmI3b";
+let currentFilter="all";
 
-    const client = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+function showLogin(){
+ dashboard.style.display="none";
+ loginBox.style.display="block";
+}
 
-    const loginBox = document.getElementById("login");
-    const dashboard = document.getElementById("dashboard");
-    const status = document.getElementById("status");
-    const messageStatus = document.getElementById("messageStatus");
-    const messagesBox = document.getElementById("messages");
+function showDashboard(){
+ loginBox.style.display="none";
+ dashboard.style.display="block";
+}
 
-    function showDashboard() {
-      loginBox.style.display = "none";
-      dashboard.style.display = "block";
-    }
+async function loadMessages(){
+ messageStatus.textContent="Loading messages...";
+ messagesBox.replaceChildren();
 
-    function showLogin() {
-      dashboard.style.display = "none";
-      loginBox.style.display = "block";
-    }
+ let query=client.from("contact_messages")
+ .select("id,created_at,name,email,message,is_read")
+ .order("created_at",{ascending:false});
 
-    async function loadMessages() {
-      messageStatus.textContent = "Loading messages...";
-      messagesBox.replaceChildren();
+ if(currentFilter==="unread") query=query.eq("is_read",false);
+ if(currentFilter==="read") query=query.eq("is_read",true);
 
-      const { data, error } = await client
-        .from("contact_messages")
-        .select("id, created_at, name, email, message")
-        .order("created_at", { ascending: false });
+ const {data,error}=await query;
 
-      if (error) {
-        messageStatus.textContent =
-          "Could not load messages: " + error.message;
-        return;
-      }
+ if(error){
+  messageStatus.textContent="Error: "+error.message;
+  return;
+ }
 
-      if (!data || data.length === 0) {
-        messageStatus.textContent = "No messages received yet.";
-        return;
-      }
+ if(!data || data.length===0){
+  messageStatus.textContent="No messages found.";
+  return;
+ }
 
-      messageStatus.textContent =
-        data.length + " message(s) received.";
+ const unread=data.filter(item=>!item.is_read).length;
+ summary.textContent="Unread messages: "+unread;
 
-      data.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "message";
+ messageStatus.textContent=data.length+" message(s) displayed.";
 
-        const name = document.createElement("h3");
-        name.textContent = item.name || "No name";
+ data.forEach(item=>{
+  const card=document.createElement("div");
+  card.className="message"+(!item.is_read?" unread":"");
 
-        const email = document.createElement("p");
-        email.textContent = "Email: " + (item.email || "");
+  const name=document.createElement("h3");
+  name.textContent=item.name||"No name";
 
-        const message = document.createElement("p");
-        message.textContent = item.message || "";
+  const email=document.createElement("p");
+  email.textContent="Email: "+(item.email||"No email");
 
-        const date = document.createElement("div");
-        date.className = "date";
-        date.textContent = new Date(
-          item.created_at
-        ).toLocaleString();
+  const message=document.createElement("p");
+  message.textContent=item.message||"";
 
-        card.append(name, email, message, date);
-        messagesBox.appendChild(card);
-      });
-    }
+  const date=document.createElement("div");
+  date.className="date";
+  date.textContent=new Date(item.created_at).toLocaleString();
 
-    async function checkAdminAndLoad() {
-      const { data, error } = await client.auth.getSession();
+  const reply=document.createElement("a");
+  reply.textContent="Reply by Email";
+  reply.href="mailto:"+encodeURIComponent(item.email||"")+
+   "?subject="+encodeURIComponent("Re: Your message to ABDULREGULAR Agency")+
+   "&body="+encodeURIComponent(
+    "Hello "+(item.name||"")+",\n\nThank you for contacting ABDULREGULAR Agency.\n\n"
+   );
 
-      if (error || !data.session) {
-        showLogin();
-        return;
-      }
+  const readBtn=document.createElement("button");
+  readBtn.textContent=item.is_read?"Mark Unread":"Mark as Read";
+  readBtn.className="secondary";
+  readBtn.onclick=()=>changeReadStatus(item.id,!item.is_read);
 
-      const user = data.session.user;
+  const deleteBtn=document.createElement("button");
+  deleteBtn.textContent="Delete";
+  deleteBtn.className="danger";
+  deleteBtn.onclick=()=>deleteMessage(item.id);
 
-      if (user.app_metadata?.role !== "admin") {
-        await client.auth.signOut();
-        showLogin();
-        status.textContent = "Access denied. Admin only.";
-        return;
-      }
+  card.append(name,email,message,date);
+  card.append(document.createElement("br"),reply);
+  card.append(document.createElement("br"),readBtn,deleteBtn);
 
-      showDashboard();
-      await loadMessages();
-    }
+  messagesBox.appendChild(card);
+ });
+}
 
-    document.getElementById("loginBtn")
-      .addEventListener("click", async () => {
+async function changeReadStatus(id,read){
+ messageStatus.textContent="Updating...";
+ const {error}=await client.from("contact_messages")
+  .update({is_read:read}).eq("id",id);
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+ if(error){
+  messageStatus.textContent="Update failed: "+error.message;
+  return;
+ }
+ await loadMessages();
+}
 
-        status.textContent = "Signing in...";
+async function deleteMessage(id){
+ if(!confirm("Are you sure you want to delete this message?")) return;
 
-        const { data, error } = await client.auth.signInWithPassword({
-          email,
-          password
-        });
+ messageStatus.textContent="Deleting...";
+ const {error}=await client.from("contact_messages")
+  .delete().eq("id",id);
 
-        if (error) {
-          status.textContent = "Login failed: " + error.message;
-          return;
-        }
+ if(error){
+  messageStatus.textContent="Delete failed: "+error.message;
+  return;
+ }
+ await loadMessages();
+}
 
-        if (data.user?.app_metadata?.role !== "admin") {
-          await client.auth.signOut();
-          status.textContent = "Access denied. Admin only.";
-          return;
-        }
+async function checkAdmin(){
+ const {data,error}=await client.auth.getSession();
 
-        status.textContent = "";
-        showDashboard();
-        await loadMessages();
-      });
+ if(error||!data.session){
+  showLogin();
+  return;
+ }
 
-    document.getElementById("refreshBtn")
-      .addEventListener("click", loadMessages);
+ if(data.session.user.app_metadata?.role!=="admin"){
+  await client.auth.signOut();
+  showLogin();
+  status.textContent="Access denied. Admin only.";
+  return;
+ }
 
-    document.getElementById("logoutBtn")
-      .addEventListener("click", async () => {
-        await client.auth.signOut();
-        messagesBox.replaceChildren();
-        showLogin();
-        status.textContent = "You have logged out.";
-      });
+ showDashboard();
+ await loadMessages();
+}
 
-    checkAdminAndLoad();
-  </script>
+document.getElementById("loginBtn").addEventListener("click",async()=>{
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+
+ if(!email||!password){
+  status.textContent="Enter your email and password.";
+  return;
+ }
+
+ status.textContent="Signing in...";
+
+ const {data,error}=await client.auth.signInWithPassword({email,password});
+
+ if(error){
+  status.textContent="Login failed: "+error.message;
+  return;
+ }
+
+ if(data.user.app_metadata?.role!=="admin"){
+  await client.auth.signOut();
+  status.textContent="Access denied. Admin only.";
+  return;
+ }
+
+ status.textContent="";
+ showDashboard();
+ await loadMessages();
+});
+
+document.getElementById("refreshBtn").onclick=loadMessages;
+
+document.getElementById("logoutBtn").onclick=async()=>{
+ await client.auth.signOut();
+ messagesBox.replaceChildren();
+ showLogin();
+ status.textContent="You have logged out.";
+};
+
+document.querySelectorAll("[data-filter]").forEach(button=>{
+ button.onclick=async()=>{
+  currentFilter=button.dataset.filter;
+  await loadMessages();
+ };
+});
+
+checkAdmin();
+</script>
 </body>
 </html>
