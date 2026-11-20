@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | ABDULREGULAR</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: #fff;
+      padding: 25px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+    }
+
+    h1 {
+      color: #62e6c5;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      margin-bottom: 25px;
+    }
+
+    .panel {
+      background: #151d30;
+      border: 1px solid #29364d;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 7px;
+      border: 1px solid #39465e;
+      background: #0b1020;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | ABDULREGULAR</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: #fff;
+      padding: 25px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+    }
+
+    h1 {
+      color: #62e6c5;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      margin-bottom: 25px;
+    }
+
+    .panel {
+      background: #151d30;
+      border: 1px solid #29364d;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 7px;
+      border: 1px solid #39465e;
+      background: #0b1020;
+      color: white;
+      font-size: 15px;
+    }
+
+    button {
+      padding: 13px 20px;
+      border: none;
+      border-radius: 7px;
+      background: #62e6c5;
+      color: #07131a;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    button:hover {
+      opacity: .85;
+    }
+
+    .logout {
+      background: #e05b67;
+      color: white;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    #status {
+      margin-top: 15px;
+      color: #62e6c5;
+      overflow-wrap: anywhere;
+    }
+
+    .message {
+      border: 1px solid #35445d;
+      padding: 18px;
+      border-radius: 9px;
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    .message p {
+      margin-top: 10px;
+      color: #c5cbd5;
+      white-space: pre-wrap;
+    }
+
+    .date {
+      color: #62e6c5;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>ABDULREGULAR</h1>
+    <p class="subtitle">Private Admin Dashboard</p>
+
+    <section id="login" class="panel">
+      <h2>Admin Login</h2>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Admin Email"
+        autocomplete="username"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
+
+      <button id="loginBtn">Login</button>
+
+      <p id="status" role="status"></p>
+    </section>
+
+    <section id="dashboard" class="panel">
+      <h2>Customer Messages</h2>
+      <p class="subtitle">Private messages received from your website.</p>
+
+      <button id="refreshBtn">Refresh Messages</button>
+      <button id="logoutBtn" class="logout">Logout</button>
+
+      <p id="messageStatus" role="status"></p>
+      <div id="messages"></div>
+    </section>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL =
+      "https://ezppudjdbxpaznfywffk.supabase.co";
+
+    const SUPABASE_KEY =
+      sb_publishable_NfSs6k-2_EBPU-5HgcyErw_548GmI3b";
+
+    const client = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const loginBox = document.getElementById("login");
+    const dashboard = document.getElementById("dashboard");
+    const status = document.getElementById("status");
+    const messageStatus = document.getElementById("messageStatus");
+    const messagesBox = document.getElementById("messages");
+
+    function showDashboard() {
+      loginBox.style.display = "none";
+      dashboard.style.display = "block";
+    }
+
+    function showLogin() {
+      dashboard.style.display = "none";
+      loginBox.style.display = "block";
+    }
+
+    async function loadMessages() {
+      messageStatus.textContent = "Loading messages...";
+      messagesBox.replaceChildren();
+
+      const { data, error } = await client
+        .from("contact_messages")
+        .select("id, created_at, name, email, message")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        messageStatus.textContent =
+          "Could not load messages: " + error.message;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        messageStatus.textContent = "No messages received yet.";
+        return;
+      }
+
+      messageStatus.textContent =
+        data.length + " message(s) received.";
+
+      data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "message";
+
+        const name = document.createElement("h3");
+        name.textContent = item.name || "No name";
+
+        const email = document.createElement("p");
+        email.textContent = "Email: " + (item.email || "");
+
+        const message = document.createElement("p");
+        message.textContent = item.message || "";
+
+        const date = document.createElement("div");
+        date.className = "date";
+        date.textContent = new Date(
+          item.created_at
+        ).toLocaleString();
+
+        card.append(name, email, message, date);
+        messagesBox.appendChild(card);
+      });
+    }
+
+    async function checkAdminAndLoad() {
+      const { data, error } = await client.auth.getSession();
+
+      if (error || !data.session) {
+        showLogin();
+        return;
+      }
+
+      const user = data.session.user;
+
+      if (user.app_metadata?.role !== "admin") {
+        await client.auth.signOut();
+        showLogin();
+        status.textContent = "Access denied. Admin only.";
+        return;
+      }
+
+      showDashboard();
+      await loadMessages();
+    }
+
+    document.getElementById("loginBtn")
+      .addEventListener("click", async () => {
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        status.textContent = "Signing in...";
+
+        const { data, error } = await client.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          status.textContent = "Login failed: " + error.message;
+          return;
+        }
+
+        if (data.user?.app_metadata?.role !== "admin") {
+          await client.auth.signOut();
+          status.textContent = "Access denied. Admin only.";
+          return;
+        }
+
+        status.textContent = "";
+        showDashboard();
+        await loadMessages();
+      });
+
+    document.getElementById("refreshBtn")
+      .addEventListener("click", loadMessages);
+
+    document.getElementById("logoutBtn")
+      .addEventListener("click", async () => {
+        await client.auth.signOut();
+        messagesBox.replaceChildren();
+        showLogin();
+        status.textContent = "You have logged out.";
+      });
+
+    checkAdminAndLoad();
+  </script>
+</body>
+</html>￼Entercolor: white;
+      font-size: 15px;
+    }
+
+    button {
+      padding: 13px 20px;
+      border: none;
+      border-radius: 7px;
+      background: #62e6c5;
+      color: #07131a;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    button:hover {
+      opacity: .85;
+    }
+
+    .logout {
+      background: #e05b67;
+      color: white;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    #status {
+      margin-top: 15px;
+      color: #62e6c5;
+      overflow-wrap: anywhere;
+    }
+
+    .message {
+      border: 1px solid #35445d;
+      padding: 18px;
+      border-radius: 9px;
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    .message p {
+      margin-top: 10px;
+      color: #c5cbd5;
+      white-space: pre-wrap;
+    }
+
+    .date {
+      color: #62e6c5;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>ABDULREGULAR</h1>
+    <p class="subtitle">Private Admin Dashboard</p>
+
+    <section id="login" class="panel">
+      <h2>Admin Login</h2>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Admin Email"
+        autocomplete="username"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
+
+      <button id="loginBtn">Login</button>
+
+      <p id="status" role="status"></p>
+    </section>
+
+    <section id="dashboard" class="panel">
+      <h2>Customer Messages</h2>
+      <p class="subtitle">Private messages received from your website.</p>
+
+      <button id="refreshBtn">Refresh Messages</button>
+      <button id="logoutBtn" class="logout">Logout</button>
+
+      <p id="messageStatus" role="status"></p>
+      <div id="messages"></div>
+    </section>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL =
+      "https://ezppudjdbxpaznfywffk.supabase.co";
+
+    const SUPABASE_KEY =
+      "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE";
+
+    const client = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const loginBox = document.getElementById("login");
+    const dashboard = document.getElementById("dashboard");
+    const status = document.getElementById("status");
+    const messageStatus = document.getElementById("messageStatus");
+    const messagesBox = document.getElementById("messages");
+
+    function showDashboard() {
