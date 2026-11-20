@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,60 +19,7 @@
       font-family: Arial, sans-serif;
       background: #0b1020;
       color: #fff;
-      padding: 25px;
-    }
-
-    .container {
-      max-width: 850px;
-      margin: 40px auto;
-    }
-
-    h1 {
-      color: #62e6c5;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      color: #aaa;
-      margin-bottom: 25px;
-    }
-
-    .panel {
-      background: #151d30;
-      border: 1px solid #29364d;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 7px;
-      border: 1px solid #39465e;
-      background: #0b1020;
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | ABDULREGULAR</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b1020;
-      color: #fff;
-      padding: 25px;
+      padding: 20px;
     }
 
     .container {
@@ -116,11 +64,7 @@
       color: #07131a;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 12px;
-    }
-
-    button:hover {
-      opacity: .85;
+      margin: 12px 8px 0 0;
     }
 
     .logout {
@@ -132,7 +76,7 @@
       display: none;
     }
 
-    #status {
+    #status, #messageStatus {
       margin-top: 15px;
       color: #62e6c5;
       overflow-wrap: anywhere;
@@ -157,10 +101,6 @@
       font-size: 12px;
       margin-top: 10px;
     }
-
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 
@@ -173,22 +113,13 @@
     <section id="login" class="panel">
       <h2>Admin Login</h2>
 
-      <input
-        type="email"
-        id="email"
-        placeholder="Admin Email"
-        autocomplete="username"
-      >
+      <input type="email" id="email"
+        placeholder="Admin Email" autocomplete="username">
 
-      <input
-        type="password"
-        id="password"
-        placeholder="Password"
-        autocomplete="current-password"
-      >
+      <input type="password" id="password"
+        placeholder="Password" autocomplete="current-password">
 
       <button id="loginBtn">Login</button>
-
       <p id="status" role="status"></p>
     </section>
 
@@ -344,123 +275,4 @@
     checkAdminAndLoad();
   </script>
 </body>
-</html>￼Entercolor: white;
-      font-size: 15px;
-    }
-
-    button {
-      padding: 13px 20px;
-      border: none;
-      border-radius: 7px;
-      background: #62e6c5;
-      color: #07131a;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-
-    button:hover {
-      opacity: .85;
-    }
-
-    .logout {
-      background: #e05b67;
-      color: white;
-    }
-
-    #dashboard {
-      display: none;
-    }
-
-    #status {
-      margin-top: 15px;
-      color: #62e6c5;
-      overflow-wrap: anywhere;
-    }
-
-    .message {
-      border: 1px solid #35445d;
-      padding: 18px;
-      border-radius: 9px;
-      margin-top: 15px;
-      overflow-wrap: anywhere;
-    }
-
-    .message p {
-      margin-top: 10px;
-      color: #c5cbd5;
-      white-space: pre-wrap;
-    }
-
-    .date {
-      color: #62e6c5;
-      font-size: 12px;
-      margin-top: 10px;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-
-    <h1>ABDULREGULAR</h1>
-    <p class="subtitle">Private Admin Dashboard</p>
-
-    <section id="login" class="panel">
-      <h2>Admin Login</h2>
-
-      <input
-        type="email"
-        id="email"
-        placeholder="Admin Email"
-        autocomplete="username"
-      >
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Password"
-        autocomplete="current-password"
-      >
-
-      <button id="loginBtn">Login</button>
-
-      <p id="status" role="status"></p>
-    </section>
-
-    <section id="dashboard" class="panel">
-      <h2>Customer Messages</h2>
-      <p class="subtitle">Private messages received from your website.</p>
-
-      <button id="refreshBtn">Refresh Messages</button>
-      <button id="logoutBtn" class="logout">Logout</button>
-
-      <p id="messageStatus" role="status"></p>
-      <div id="messages"></div>
-    </section>
-
-  </div>
-
-  <script>
-    const SUPABASE_URL =
-      "https://ezppudjdbxpaznfywffk.supabase.co";
-
-    const SUPABASE_KEY =
-      "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE";
-
-    const client = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-    const loginBox = document.getElementById("login");
-    const dashboard = document.getElementById("dashboard");
-    const status = document.getElementById("status");
-    const messageStatus = document.getElementById("messageStatus");
-    const messagesBox = document.getElementById("messages");
-
-    function showDashboard() {
+</html>
