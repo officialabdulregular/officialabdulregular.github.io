@@ -182,6 +182,52 @@
       margin: 12px auto 25px;
     }
 
+    .contact-form label {
+      display: block;
+      text-align: left;
+      margin: 12px auto 6px;
+      max-width: 520px;
+      color: #dce5f2;
+      font-size: 14px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      display: block;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto 12px;
+      padding: 13px;
+      border: 1px solid #39465e;
+      border-radius: 7px;
+      background: #0b1020;
+      color: #fff;
+      font: inherit;
+    }
+
+    .contact-form textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .contact-form .website-field {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    #formStatus {
+      min-height: 1.5em;
+      margin-top: 12px;
+    }
+
+    #formStatus:focus {
+      outline: 2px solid #62e6c5;
+      outline-offset: 4px;
+    }
+
     footer {
       text-align: center;
       padding: 25px;
@@ -361,31 +407,47 @@
           your existing website? Let's talk.
         </p>
        <form id="contactForm" class="contact-form">
+  <label for="name">Your Name</label>
   <input
     type="text"
     id="name"
+    name="name"
     placeholder="Your Name"
+    autocomplete="name"
+    maxlength="100"
     required
   >
 
+  <label for="email">Your Email</label>
   <input
     type="email"
     id="email"
+    name="email"
     placeholder="Your Email"
+    autocomplete="email"
+    maxlength="254"
     required
   >
 
+  <label for="message">Your Message</label>
   <textarea
     id="message"
-    placeholder="Your Message"
+    name="message"
+    placeholder="Tell us about your project"
+    maxlength="5000"
     required
   ></textarea>
 
-  <button type="submit" class="btn">
+  <div class="website-field" aria-hidden="true">
+    <label for="website">Leave this field empty</label>
+    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+  </div>
+
+  <button type="submit" class="btn" id="submitMessage">
     Send Message
   </button>
 
-  <p id="formStatus"></p>
+  <p id="formStatus" role="status" aria-live="polite" tabindex="-1"></p>
        </form> 
 <div>
   <a
@@ -422,16 +484,33 @@ const SUPABASE_KEY = "sb_publishable_NfSs6k-2_EBPU-5HgcyErw_548GmI3b";
 const form = document.getElementById("contactForm");
 const status = document.getElementById("formStatus");
 
+const submitButton = document.getElementById("submitMessage");
+const websiteField = document.getElementById("website");
+
 form.addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  status.textContent = "Sending...";
+  // Simple honeypot: silently ignore automated submissions that fill this field.
+  if (websiteField.value.trim() !== "") {
+    form.reset();
+    status.textContent = "Thank you. Your message has been received.";
+    return;
+  }
 
   const data = {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    message: document.getElementById("message").value
+    name: document.getElementById("name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    message: document.getElementById("message").value.trim()
   };
+
+  if (!data.name || !data.email || !data.message) {
+    status.textContent = "Please complete all fields.";
+    return;
+  }
+
+  status.textContent = "Sending...";
+  submitButton.disabled = true;
+  submitButton.textContent = "Sending...";
 
   try {
     const response = await fetch(
@@ -447,17 +526,19 @@ form.addEventListener("submit", async function(e) {
         body: JSON.stringify(data)
       }
     );
-if (!response.ok) {
-  const errorText = await response.text();
-  throw new Error("Supabase " + response.status + ": " + errorText);
-}
 
-status.textContent = "Message sent successfully!";
-form.reset();
+    if (!response.ok) {
+      throw new Error("Request failed with status " + response.status);
+    }
 
-} catch (error) {
-  status.textContent = "Error: " + error.message;
-    
+    status.textContent = "Message sent successfully!";
+    form.reset();
+  } catch (error) {
+    console.error("Contact form submission failed:", error);
+    status.textContent = "Sorry, your message could not be sent. Please try again or contact us by email.";
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Send Message";
   }
 });
 </script>
