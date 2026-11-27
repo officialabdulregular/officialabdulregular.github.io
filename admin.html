@@ -96,8 +96,7 @@ async function loadMessages(){
 
  let query=client.from("contact_messages")
  .select("id,created_at,name,email,message,is_read",{count:"exact"})
- .order("created_at",{ascending:false})
- .range(0,49);
+ .order("created_at",{ascending:false});
 
  if(currentFilter==="unread") query=query.eq("is_read",false);
  if(currentFilter==="read") query=query.eq("is_read",true);
@@ -127,7 +126,7 @@ async function loadMessages(){
   return;
  }
 
- messageStatus.textContent=(count||data.length)+" message(s) match this filter. Showing the newest "+data.length+".";
+ messageStatus.textContent=(count||data.length)+" message(s) displayed.";
 
  data.forEach(item=>{
   const card=document.createElement("div");
