@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://officialabdulregular.github.io/sitemap.xml
